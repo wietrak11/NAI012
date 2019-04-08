@@ -363,7 +363,6 @@ public class Controller {
         Double delB = null;
         Double[][] delB1 = null;
         Double tmpError = countError(binaryResult[0][0], result[0][0],binaryResult[1][0], result[1][0]);
-        System.out.println(tmpError);
         for(int i=0 ; i<result.length ; i++){
             if(binaryResult[i][0].equals(result[i][0]) || tmpError<error){
 
@@ -398,9 +397,6 @@ public class Controller {
         weights = startingWeights;
         Double[][] net;
         Double[][] sigBiFun;
-
-        showArray(startingWeights);
-        showArray(thresholdArray);
 
         for(int i=0; i<era ; i++){
             net = countNET(weights,trainingZero,thresholdArray);
