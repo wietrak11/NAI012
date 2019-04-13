@@ -15,6 +15,8 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
 
+        //Zainicjowanie GUI
+        //Cała logika programu jest wykonywana w klasie Controller
         ControllerHandle = (Controller)loader.getController();
         ControllerHandle.setStage(primaryStage);
         ControllerHandle.setGrid();

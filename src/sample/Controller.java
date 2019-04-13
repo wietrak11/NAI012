@@ -47,6 +47,12 @@ public class Controller {
     private Double[][] binaryOne = new Double[2][1];
     private Double[][] binaryTwo = new Double[2][1];
 
+    //Cały program ciężko jest zakomentować ponieważ starałem się go robić do uniwersalnego zastosowania.
+    //Same nazwy metod bardzo dobrze opisują swoje zadanie.
+    //Mimo wszystko postaram się nad każdą klasą dodac odpowiedni komentarz streszczający jej zadanie
+
+    //Zainicjowanie macierzy trenujących po dwie dla każdej cyfry jaką ma odgadywać program
+    //Jedna w formie zamalowanych kratek w programie i druga w formie reprezentacji binarnej
     public void setTrainingArrays(){
         binaryZero = new Double[][]{
                                         {0.0},
@@ -135,6 +141,7 @@ public class Controller {
                                         {1.0}};
     }
 
+    //Pobranie zaznaczonych elementów w GUI do macierzy
     public void setInputArray(){
         List<Double> tmpList = new ArrayList<>();
         for(int i = 0; i< BOARD_TILE_HEIGHT; i++){
@@ -148,6 +155,8 @@ public class Controller {
         }
     }
 
+    //Losowanie wartości macierzy przy dostarczeniu tablicy
+    //Wykorzystywane w losowaniu macierzy wag początkowych oraz wartości progowej
     public Double[][] randomizeMatrix(Double[][] matrix){
         Random r = new Random();
         for(int i=0 ; i<matrix.length ; i++){
@@ -158,6 +167,7 @@ public class Controller {
         return matrix;
     }
 
+    //Prost funkcja zaokrąglająca podany wynik do miejsc po przeninku podanych jako drugi argument
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
@@ -166,6 +176,7 @@ public class Controller {
         return bd.doubleValue();
     }
 
+    //Funkcja dodająca siatke do naszego GUI
     public void setGrid(){
         for(int i = 0; i< BOARD_TILE_HEIGHT; i++){
             for(int j = 0; j< BOARD_TILE_WIDTH; j++){
@@ -186,6 +197,7 @@ public class Controller {
         this.stage = stage;
     }
 
+    //Dwie funkcje dodające możliwość rysowania po siatce
     public void setMouseClickedListener(){
         board.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 me -> {
@@ -226,6 +238,7 @@ public class Controller {
                 });
     }
 
+    //Funkcja wypisująca na konsoli macierz. Obecnie nigdzie nie jest wykorzystywana.
     public <T> void showArray(T[][] array){
         System.out.print("[");
         for(int i=0 ; i<array.length ; i++){
@@ -251,6 +264,7 @@ public class Controller {
         System.out.println();
     }
 
+    //Funkcja pobierająca dane z pól tekstowych w GUI
     public void getDataFromTextBox(){
         if(!uczenie.getText().equals("") && !epoki.getText().equals("") && !prog.getText().equals("")) {
             learn = Double.parseDouble(uczenie.getText());
@@ -259,12 +273,7 @@ public class Controller {
         }
     }
 
-    public void showData(){
-        System.out.println("Learn: " + learn);
-        System.out.println("Era: " + era);
-        System.out.println("Error: " + err);
-    }
-
+    //Funkcja konwertująca macierz wynikową na zrozumiały dla zwykłego użytkownika język
     public void convertResult(Double[][] A){
         if(A[0][0] == 0.0 && A[1][0] == 0.0){
             System.out.println("Ta liczba to 0");
@@ -277,6 +286,7 @@ public class Controller {
         }
     }
 
+    //Funkcja mnożąca dwie macierze podane jako argumenty
     public Double[][] multiplyMatrix(Double[][] A, Double[][] B) {
 
         int aRows = A.length;
@@ -307,6 +317,7 @@ public class Controller {
         return C;
     }
 
+    //Funkcja odejmująca od siebie dwie macierze podane jako argumenty
     public Double[][] substractMatrix(Double[][] A, Double[][] B){
         Double[][] returnArray = new Double[A.length][A[0].length];
 
@@ -318,12 +329,14 @@ public class Controller {
         return returnArray;
     }
 
+    //Funkcja obliczająca NET po podaniu macierzy W,X oraz B
     public Double[][] countNET(Double[][] W, Double[][] X, Double[][] B){
         Double[][] multiplyArray = multiplyMatrix(W,X);
         Double[][] returnArray = substractMatrix(multiplyArray,B);
         return returnArray;
     }
 
+    //Funkcja zmieniająca elementy podanej macierzy na podstawie funkcji progowej unipolarnej
     public Double[][] getBinarySigmoidalFunction(Double[][] A){
         Double[][] returnArray = new Double[A.length][A[0].length];
 
@@ -341,16 +354,7 @@ public class Controller {
         return returnArray;
     }
 
-    public Double[][] multiplyByConstant(Double cons, Double[][]A){
-        Double[][] returnArray = new Double[A.length][A[0].length];
-        for(int i=0 ; i<A.length ; i++){
-            for(int j=0 ; j<A[0].length ; j++){
-                A[i][j] = A[i][j]*cons;
-            }
-        }
-        return returnArray;
-    }
-
+    //Funkcja obliczająca błąd uczenia
     public Double countError(double d1,double y1,double d2, double y2){
         Double error = null;
 
@@ -359,6 +363,7 @@ public class Controller {
         return error;
     }
 
+    //Funkcja przeprowadzająca uczenie na podstawie podanej macierzy uczącej
     public void train( Double learn, Double[][] result,Double[][] trainingArray,Double[][] binaryResult, Double error){
         Double delB = null;
         Double[][] delB1 = null;
@@ -370,7 +375,7 @@ public class Controller {
                 delB = learn * (binaryResult[i][0] - result[i][0]);
                 delB1 = new Double[1][trainingArray.length];
 
-                thresholdArray[i][0] = thresholdArray[i][0] * delB;
+                thresholdArray[i][0] = thresholdArray[i][0] + delB;
 
                 for(int j=0; j<delB1[0].length ; j++){
                     delB1[0][j] = trainingArray[j][0] * delB;
@@ -383,6 +388,8 @@ public class Controller {
         }
     }
 
+    //Funkcja nałożona na przycisk check
+    //Pobiera dane z siatki a następnie sprawdza na podstawie sieci neuronowej jaka to cyfra
     public void checkClick(MouseEvent mouseEvent) {
         setInputArray();
         Double[][] net = countNET(weights,inputArray,thresholdArray);
@@ -390,6 +397,11 @@ public class Controller {
         convertResult(sigBiFun);
     }
 
+    //Funkcja nałożona na przycisk train
+    //Pobiera dane z pól tekstowych
+    //Losuje macierze wag i wartości progowych
+    //Następnie na podstawie podanych danych przeprowadza uczenie dla kolejnych cyfr
+    //Jedna epoka uczenia to tak na prawde 3 uczenia. Po jednym dla każdej cyfry
     public  void trainClick(MouseEvent mouseEvent){
         getDataFromTextBox();
         startingWeights = randomizeMatrix(startingWeights);
