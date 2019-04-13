@@ -221,7 +221,7 @@ public class Controller {
     public void setMouseDraggedListener(){
         board.addEventHandler(MouseEvent.MOUSE_DRAGGED,
                 me -> {
-                    if(me.getX()>=0 && me.getX()<270 && me.getY()>=0 && me.getY()<400){
+                    if(me.getX()>=0 && me.getX()<264 && me.getY()>=0 && me.getY()<400){
                         if(me.isPrimaryButtonDown()) {
                             tileArray[(int) (me.getY() / TILE_WIDTH)][(int) (me.getX() / TILE_HEIGHT)].getPane().setStyle("-fx-background-color: red;" +
                                     "-fx-border-color: black;" +
